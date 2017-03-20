@@ -72,6 +72,23 @@ def long_task(self):
 					if str(wb[page][row,header_column]) in accountlist:
 						accountrow.append(wb[page][row,column])
 				if len(accountrow) > 0:
+					for cell in range(0,len(accountrow)):
+						if ("ssn" in str(headerrow[cell]).lower() or "tax" in str(headerrow[cell]).lower() or "social" in str(headerrow[cell]).lower() or str(headerrow[cell]).lower() == 'tin' or "soc_sec_num" in str(headerrow[cell]).lower() or "ss #" in str(headerrow[cell]).lower()) and (len(str(accountrow[cell])) != "0" or len(str(accountrow[cell])) != "1"):
+							accountrow[cell] = 'XXX-XX-X' + str(accountrow[cell][-3:])
+						try:
+							if isinstance(accountrow[cell],datetime.date) == True:
+								accountrow[cell] = accountrow[cell].strftime("%m-%d-%Y")
+						except:
+							pass
+						try:
+							if "ph" in str(headerrow[cell]).lower() and isinstance(int(accountrow[cell]),int) == True:
+								accountrow[cell] = '({}) {}-{}'.format(accountrow[cell][0:3],accountrow[cell][3:6],accountrow[cell][6:])
+						except:
+							pass
+						if "email" in str(headerrow[cell]).lower():
+							accountrow[cell] = 'XXXXX'
+						if "sale_price" in str(headerrow[cell]).lower() or "proceeds" in str(headerrow[cell]).lower():
+							accountrow[cell] = 'XXXXX'
 					if not os.path.exists('/mnt/consentorders/' + str(datetime.date.today().strftime("%m-%d-%Y")) + '/'):
 						os.makedirs('/mnt/consentorders/' + str(datetime.date.today().strftime("%m-%d-%Y")) + '/')
 					if os.path.exists('/mnt/consentorders/' + str(datetime.date.today().strftime("%m-%d-%Y")) + '/' + str(wb[page][row,header_column]) + '.pdf') == False:
