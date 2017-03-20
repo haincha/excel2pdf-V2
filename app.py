@@ -74,7 +74,7 @@ def long_task(self):
 				if len(accountrow) > 0:
 					for cell in range(0,len(accountrow)):
 						if ("ssn" in str(headerrow[cell]).lower() or "tax" in str(headerrow[cell]).lower() or "social" in str(headerrow[cell]).lower() or str(headerrow[cell]).lower() == 'tin' or "soc_sec_num" in str(headerrow[cell]).lower() or "ss #" in str(headerrow[cell]).lower()) and (len(str(accountrow[cell])) != "0" or len(str(accountrow[cell])) != "1"):
-							accountrow[cell] = 'XXX-XX-X' + str(accountrow[cell][-3:])
+							accountrow[cell] = 'XXX-XX-X{}'.format(accountrow[cell][-3:])
 						try:
 							if isinstance(accountrow[cell],datetime.date) == True:
 								accountrow[cell] = accountrow[cell].strftime("%m-%d-%Y")
