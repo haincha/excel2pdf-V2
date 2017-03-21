@@ -13,8 +13,8 @@ import pickle
 
 app = Flask(__name__)
 app.secret_key = 'some_secret'
-app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+app.config['CELERY_BROKER_URL'] = 'redis://mw11cn02:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = 'redis://mw11cn01:6379/0'
 app.config['UPLOAD_FOLDER'] = '.'
 
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
@@ -192,25 +192,8 @@ def delete():
 		return render_template('delete.html')
 	return render_template('delete.html', today=today)
 
-def is_float(input):
-	try:
-		num = float(input)
-	except ValueError:
-		return False
-	return True
-
-def is_int(input):
-	try:
-		num = int(input)
-	except ValueError:
-		return False
-	return True
-
 if __name__ == "__main__":
 	# start web server
 	app.run(
-		#debug=True
-		threaded=True,
-		host='0.0.0.0',
-		port=80
+		threaded=True
 	)
