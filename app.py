@@ -13,8 +13,8 @@ import pickle
 
 app = Flask(__name__)
 app.secret_key = 'some_secret'
-app.config['CELERY_BROKER_URL'] = 'redis://mw11cn02:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://mw11cn01:6379/0'
+app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
 app.config['UPLOAD_FOLDER'] = '.'
 
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
@@ -89,10 +89,11 @@ def long_task(self):
 							accountrow[cell] = 'XXXXX'
 						if "sale_price" in str(headerrow[cell]).lower() or "proceeds" in str(headerrow[cell]).lower():
 							accountrow[cell] = 'XXXXX'
+					for cell in range(0,len(accountrow)):
+						htmlcode += HTML.table([[headerrow[cell]],[accountrow[cell]]],border=0,style=(styling))
 					if not os.path.exists('/mnt/consentorders/' + str(datetime.date.today().strftime("%m-%d-%Y")) + '/'):
 						os.makedirs('/mnt/consentorders/' + str(datetime.date.today().strftime("%m-%d-%Y")) + '/')
 					if os.path.exists('/mnt/consentorders/' + str(datetime.date.today().strftime("%m-%d-%Y")) + '/' + str(wb[page][row,header_column]) + '.pdf') == False:
-						htmlcode += HTML.table([headerrow,accountrow],border=0,style=(styling))
 						pdfkit.from_string(htmlcode, '/mnt/consentorders/' + str(datetime.date.today().strftime("%m-%d-%Y")) + '/' + str(wb[page][row,header_column]) + '.pdf', options={'orientation': 'Landscape', 'quiet': ''})
 						found_accounts += 1
 					accountrow = []
@@ -195,5 +196,7 @@ def delete():
 if __name__ == "__main__":
 	# start web server
 	app.run(
-		threaded=True
+		threaded=True,
+		host='0.0.0.0',
+		port=80
 	)
